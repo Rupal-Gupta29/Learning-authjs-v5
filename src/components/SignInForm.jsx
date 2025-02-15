@@ -7,8 +7,12 @@ const SignInForm = () => {
     password: "",
   });
 
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+  };
+
   return (
-    <form className="space-y-6">
+    <form className="space-y-6" onSubmit={handleSignIn}>
       <div>
         <label className="text-gray-600 text-sm mb-2 block">Email Id</label>
         <div className="relative flex items-center">

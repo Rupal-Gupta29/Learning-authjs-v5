@@ -1,16 +1,47 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
+  const router = useRouter();
   const [userDetails, setUserDetails] = useState({
     name: "",
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/sign-up", {
+        method: "POST",
+        body: JSON.stringify(userDetails),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        toast.success(result.message);
+        router.push("/sign-in");
+      } else if (!response.ok) {
+        setErrors(result.errors);
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <form className="space-y-6">
+    <form className="space-y-6" onSubmit={handleSignUp}>
+      {errors && errors?.server && (
+        <p className="mt-2 text-sm text-red-600">{errors.server}</p>
+      )}
       <div>
         <label className="text-gray-600 text-sm mb-2 block">Name</label>
         <div className="relative flex items-center">
@@ -26,6 +57,7 @@ const SignUpForm = () => {
             }
           />
         </div>
+        {errors && <p className="mt-2 text-sm text-red-600">{errors?.name}</p>}
       </div>
 
       <div>
@@ -43,6 +75,9 @@ const SignUpForm = () => {
             }
           />
         </div>
+        {errors && errors?.email && (
+          <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+        )}
       </div>
 
       <div>
@@ -63,6 +98,9 @@ const SignUpForm = () => {
             }
           />
         </div>
+        {errors && errors?.password && (
+          <p className="mt-2 text-sm text-red-600">{errors?.password}</p>
+        )}
       </div>
 
       <div className="mt-8">
