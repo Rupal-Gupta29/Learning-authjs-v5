@@ -1,18 +1,29 @@
 import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "@/auth";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { credentialsLoginAction } from "@/app/actions/authActions";
 
 const SignInForm = () => {
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+  const router = useRouter({});
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    const response = await credentialsLoginAction(userDetails);
+    console.log("responsee", response);
   };
 
   return (
     <form className="space-y-6" onSubmit={handleSignIn}>
+      {errors && errors?.server && (
+        <p className="mt-2 text-sm text-red-600">{errors.server}</p>
+      )}
       <div>
         <label className="text-gray-600 text-sm mb-2 block">Email Id</label>
         <div className="relative flex items-center">
@@ -28,6 +39,9 @@ const SignInForm = () => {
             }
           />
         </div>
+        {errors && errors?.email && (
+          <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+        )}
       </div>
 
       <div>
@@ -48,6 +62,9 @@ const SignInForm = () => {
             }
           />
         </div>
+        {errors && errors?.password && (
+          <p className="mt-2 text-sm text-red-600">{errors?.password}</p>
+        )}
       </div>
 
       <div className="mt-8">

@@ -7,8 +7,8 @@ const registerSchema = vine.object({
 });
 
 const loginSchema = vine.object({
-  email: vine.string().email(),
-  password: vine.string().minLength(8).maxLength(20),
+  email: vine.string().email().required(),
+  password: vine.string().minLength(8).maxLength(20).required(),
 });
 
 export { registerSchema, loginSchema };

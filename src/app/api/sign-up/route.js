@@ -12,9 +12,9 @@ export async function POST(request) {
     const body = await request.json();
     const validator = vine.compile(registerSchema);
     validator.errorReporter = () => new ErrorReporter();
-    const output = await validator.validate(body);
+    const validatedData = await validator.validate(body);
 
-    const findUser = await User.findOne({ email: output.email });
+    const findUser = await User.findOne({ email: validatedData.email });
 
     if (findUser) {
       return NextResponse.json(
@@ -29,10 +29,10 @@ export async function POST(request) {
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(output.password, salt);
+    const hashedPassword = await bcrypt.hash(validatedData.password, salt);
 
-    output.password = hashedPassword;
-    await User.create(output);
+    validatedData.password = hashedPassword;
+    await User.create(validatedData);
 
     return NextResponse.json(
       {

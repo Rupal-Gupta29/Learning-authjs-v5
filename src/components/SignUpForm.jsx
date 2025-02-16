@@ -20,11 +20,12 @@ const SignUpForm = () => {
       const response = await fetch("/api/sign-up", {
         method: "POST",
         body: JSON.stringify(userDetails),
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
 
       const result = await response.json();
       if (response.ok) {
+        setErrors({});
         toast.success(result.message);
         router.push("/sign-in");
       } else if (!response.ok) {
